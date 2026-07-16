@@ -1,0 +1,21 @@
+[project]
+name = "landprice"
+version = "0.1.0"
+description = "대한민국 필지별 공시지가 시계열 데이터 구축 파이프라인"
+requires-python = ">=3.10"
+dependencies = [
+    "requests",
+    "pandas",
+    "polars",
+    "pyarrow",
+    "duckdb",
+    "tqdm",
+    "python-dotenv",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
