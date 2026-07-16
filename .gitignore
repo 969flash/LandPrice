@@ -1,0 +1,24 @@
+# 환경
+.venv/
+.env
+__pycache__/
+*.pyc
+
+# 데이터 (대용량 — 저장소에 커밋하지 않음)
+data/raw/
+data/parquet/
+data/db/
+*.zip
+*.csv
+*.parquet
+*.duckdb
+
+# 로그
+logs/
+
+# OS
+.DS_Store
+
+# 사용자 로컬 클론/빌드 부산물
+LandPrice/
+*.egg-info/
