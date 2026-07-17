@@ -10,8 +10,8 @@ $stallMin = 20
 Add-Type -Name PW -Namespace Sys -MemberDefinition '[DllImport("kernel32.dll")] public static extern uint SetThreadExecutionState(uint esFlags);'
 [Sys.PW]::SetThreadExecutionState([uint32]"0x80000001") | Out-Null  # ES_CONTINUOUS | ES_SYSTEM_REQUIRED
 
-function Get-LastCompleted {
-    & $py -c "import sqlite3,os;db='data/db/checkpoints.sqlite';print(sqlite3.connect(db).execute('SELECT COALESCE(MAX(completed_at),\'\') FROM sweeps').fetchone()[0] if os.path.exists(db) else '')" 2>$null
+function Get-DoneCount {
+    & $py -c "import sqlite3,os;db='data/db/checkpoints.sqlite';print(sqlite3.connect(db).execute('SELECT COUNT(*) FROM sweeps').fetchone()[0] if os.path.exists(db) else 0)" 2>$null
 }
 
 for ($i = 1; $i -le 40; $i++) {
@@ -19,18 +19,20 @@ for ($i = 1; $i -le 40; $i++) {
     # 서울(11)은 맥에서 벌크로 적재 완료 → 제외
     $p = Start-Process -FilePath $py -ArgumentList "scripts/04_sweep_vworld_api.py --years $Years --rps 12 --workers 8 --skip-sido 11" -NoNewWindow -PassThru
 
+    # 감시견: 완료 단위 수가 stallMin분간 변하지 않으면 재시작
+    # (완료 '시각' 기준은 재시작 직후 과거 기록을 정체로 오판하므로 개수 변화 기준 사용)
+    $lastCount = Get-DoneCount
+    $lastChange = Get-Date
     while (-not $p.HasExited) {
         Start-Sleep -Seconds 120
-        $last = Get-LastCompleted
-        if ($last) {
-            try {
-                $lastTime = [datetime]::ParseExact($last, "yyyy-MM-ddTHH:mm:ss", $null)
-                if (((Get-Date) - $lastTime).TotalMinutes -gt $stallMin) {
-                    Write-Host "=== 감시견: ${stallMin}분간 진행 없음 -> 재시작: $(Get-Date) ==="
-                    Stop-Process -Id $p.Id -Force
-                    break
-                }
-            } catch {}
+        $count = Get-DoneCount
+        if ($count -ne $lastCount) {
+            $lastCount = $count
+            $lastChange = Get-Date
+        } elseif (((Get-Date) - $lastChange).TotalMinutes -gt $stallMin) {
+            Write-Host "=== 감시견: ${stallMin}분간 진행 없음 -> 재시작: $(Get-Date) ==="
+            Stop-Process -Id $p.Id -Force
+            break
         }
     }
     $p.WaitForExit()

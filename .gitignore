@@ -19,6 +19,6 @@ logs/
 # OS
 .DS_Store
 
-# 사용자 로컬 클론/빌드 부산물
-LandPrice/
+# 사용자 로컬 클론/빌드 부산물 (루트의 중복 클론 폴더만)
+/LandPrice/
 *.egg-info/

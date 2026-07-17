@@ -12,20 +12,23 @@ for i in $(seq 1 40); do
     .venv/bin/python scripts/04_sweep_vworld_api.py --years "$YEARS" --rps 12 --workers 8 &
     PY=$!
 
-    # 감시견: 파이썬 생존 중 진행 정체 감시
+    # 감시견: 완료 단위 수가 STALL_MIN분간 변하지 않으면 재시작.
+    # (완료 시각 기준으로 재면 재시작 직후 과거 시각을 정체로 오판 — 2026-07-17 수정)
+    LAST_COUNT=$(sqlite3 "$DB" "SELECT COUNT(*) FROM sweeps" 2>/dev/null || echo 0)
+    LAST_CHANGE=$(date "+%s")
     while kill -0 $PY 2>/dev/null; do
         sleep 120
-        LAST=$(sqlite3 "$DB" "SELECT COALESCE(MAX(completed_at),'') FROM sweeps" 2>/dev/null)
-        if [ -n "$LAST" ]; then
-            LAST_EPOCH=$(date -j -f "%Y-%m-%dT%H:%M:%S" "$LAST" "+%s" 2>/dev/null || echo 0)
-            NOW=$(date "+%s")
-            if [ "$LAST_EPOCH" -gt 0 ] && [ $((NOW - LAST_EPOCH)) -gt $((STALL_MIN * 60)) ]; then
-                echo "=== 감시견: ${STALL_MIN}분간 진행 없음 → 재시작 ($(date)) ==="
-                kill $PY 2>/dev/null
-                sleep 5
-                kill -9 $PY 2>/dev/null
-                break
-            fi
+        COUNT=$(sqlite3 "$DB" "SELECT COUNT(*) FROM sweeps" 2>/dev/null || echo "$LAST_COUNT")
+        NOW=$(date "+%s")
+        if [ "$COUNT" != "$LAST_COUNT" ]; then
+            LAST_COUNT=$COUNT
+            LAST_CHANGE=$NOW
+        elif [ $((NOW - LAST_CHANGE)) -gt $((STALL_MIN * 60)) ]; then
+            echo "=== 감시견: ${STALL_MIN}분간 진행 없음 → 재시작 ($(date)) ==="
+            kill $PY 2>/dev/null
+            sleep 5
+            kill -9 $PY 2>/dev/null
+            break
         fi
     done
     wait $PY

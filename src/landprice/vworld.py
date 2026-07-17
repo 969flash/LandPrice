@@ -110,7 +110,9 @@ class VWorldClient:
                         raise VWorldError("응답 전송 지연 60초 초과")
                 import json as _json
 
-                return _json.loads(b"".join(chunks))
+                # strict=False: 일부 구(舊) 데이터의 문자열 필드에 제어문자가 섞여 있음
+                # (함평군 1990~1995 실측 — 엄격 모드로는 해당 응답 파싱 불가)
+                return _json.loads(b"".join(chunks).decode("utf-8", errors="replace"), strict=False)
             except (requests.RequestException, ValueError, VWorldError) as exc:
                 last_exc = exc
                 time.sleep(min(0.5 * 2.0**attempt, 8.0))
