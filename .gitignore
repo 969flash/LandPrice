@@ -4,21 +4,19 @@
 __pycache__/
 *.pyc
 
-# 데이터 (대용량 — 저장소에 커밋하지 않음)
-data/raw/
-data/parquet/
-data/db/
+# 대용량 원본 데이터 (저장소에 커밋하지 않음 — 파이프라인으로 생성)
+data/
+logs/
 *.zip
-*.csv
 *.parquet
 *.duckdb
 
-# 로그
-logs/
+# CSV는 기본 제외하되, docs의 요약 데이터는 포함
+*.csv
+!docs/summary_data/
+!docs/summary_data/*.csv
 
-# OS
+# OS / 부산물
 .DS_Store
-
-# 사용자 로컬 클론/빌드 부산물 (루트의 중복 클론 폴더만)
 /LandPrice/
 *.egg-info/
