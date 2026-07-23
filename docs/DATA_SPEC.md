@@ -118,7 +118,9 @@ data/parquet/individual/
 
 이 데이터엔 값만 있으므로, 지도로 그리려면 **도형에 키로 조인**합니다.
 
-**지역(시도·시군구) 단위** — [docs/summary_data/](summary_data)의 집계 CSV(연도별 중위·평균·필지수)를 행정구역 경계에 `sgg_key`/시도명으로 조인. 별도 도형 없이 QGIS에서 바로 choropleth 가능.
+**QGIS 사용자는 → [docs/qgis/QGIS_사용법.md](qgis/QGIS_사용법.md)** 참조. 경계에 전 연도 지가를 넣은 GeoJSON 레이어(`docs/qgis/*.geojson`)가 있어 **열자마자 지도**가 됩니다.
+
+**지역(시도·시군구) 단위** — 위 GeoJSON 레이어를 열고 `med_2026`(또는 원하는 연도) 필드로 색칠. 별도 도형·조인 없이 QGIS에서 바로 choropleth 가능.
 
 **필지 단위** — 실제 필지 폴리곤(**연속지적도**)이 필요합니다.
 1. V-World 공간정보 다운로드에서 연속지적도(시군구별 SHP, `PNU` 속성 포함) 확보

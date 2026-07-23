@@ -13,6 +13,7 @@
 | **[데이터 명세서](docs/DATA_SPEC.md)** | 스키마·PNU 구조·품질·사용법 (가장 먼저 보세요) |
 | **[요약 대시보드](docs/index.html)** | 규모·추이·지역격차 한눈에 (브라우저로 열기) |
 | **[시도별 지도](docs/map.html)** | 1990→2026 지가 변화 인터랙티브 지도 |
+| **[QGIS 사용법](docs/qgis/QGIS_사용법.md)** | QGIS에서 지도 그리기 · 경계+지가 GeoJSON 레이어 (열자마자 지도) |
 | [데이터 출처](docs/DATA_SOURCES.md) · [수집 방법론](docs/METHODOLOGY.md) | 출처 검증 상세 · 수집·정규화 설계 |
 | [summary_data/](docs/summary_data) | 시도·시군구별 연도 시계열 CSV (바로 사용 가능) |
 
