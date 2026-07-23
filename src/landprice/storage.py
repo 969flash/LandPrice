@@ -63,7 +63,25 @@ def normalize_vworld_row(r: dict) -> dict | None:
         "price_per_m2": int(float(price)),
         "pblntf_de": str(r.get("pblntfDe", "")).strip() or None,
         "std_land_yn": str(r.get("stdLandAt", "")).strip() or None,
+        # 스키마엔 없지만 dedup_latest에서 최신 개정본 선택에 사용 (rows_to_table가 무시)
+        "_last_updt_dt": str(r.get("lastUpdtDt", "")).strip(),
     }
+
+
+def dedup_latest(rows: list[dict]) -> list[dict]:
+    """(pnu, stdr_year, stdr_month) 키별로 최신 개정본만 남긴다.
+
+    V-World API는 한 필지의 여러 개정 버전을 모두 반환하고, 며칠에 걸친 수집은
+    개정 전·후 값을 다 담아 같은 키에 가격이 여러 개 생긴다. lastUpdtDt가 가장 큰
+    (가장 최근 수정된) 레코드가 official 값이다. lastUpdtDt 동률이면 마지막 것 유지.
+    """
+    best: dict[tuple, dict] = {}
+    for r in rows:
+        key = (r["pnu"], r["stdr_year"], r["stdr_month"])
+        cur = best.get(key)
+        if cur is None or r.get("_last_updt_dt", "") >= cur.get("_last_updt_dt", ""):
+            best[key] = r
+    return list(best.values())
 
 
 def partition_path(year: int, sgg: str, source: str, base: Path = INDIVIDUAL_DIR) -> Path:

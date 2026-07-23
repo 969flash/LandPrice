@@ -90,6 +90,7 @@ def main() -> None:
                     tqdm.write(f"실패 (재실행 시 재시도): {sgg} {year} — {exc}")
                     continue
                 if rows:
+                    rows = storage.dedup_latest(rows)  # 필지별 최신 개정본만 (lastUpdtDt 최대)
                     table = storage.rows_to_table(rows, source="vworld_api")
                     storage.write_partition(table, year, sgg, source="vworld_api")
                 ckpt.mark_done(sgg, year, len(rows))
