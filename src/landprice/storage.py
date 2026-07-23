@@ -76,7 +76,7 @@ def write_partition(table: pa.Table, year: int, sgg: str, source: str, base: Pat
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".parquet.tmp")
     pq.write_table(table, tmp, compression="zstd")
-    tmp.rename(path)
+    tmp.replace(path)  # os.replace: 대상이 있어도 원자적 덮어쓰기 (윈도우에서 rename은 실패)
     return path
 
 

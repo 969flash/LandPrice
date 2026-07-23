@@ -70,7 +70,7 @@ def download_year(year: int, seq: int, dest_dir: Path = RAW_SEOUL_DIR, timeout: 
         with open(tmp, "wb") as f:
             for chunk in resp.iter_content(chunk_size=1 << 20):
                 f.write(chunk)
-        tmp.rename(dest)
+        tmp.replace(dest)  # 윈도우에서 rename은 대상 존재 시 실패 → replace로 덮어쓰기
     with zipfile.ZipFile(dest) as z:  # 무결성 확인
         z.testzip()
     return dest
