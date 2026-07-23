@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>대한민국 개별공시지가 시계열 1990–2026</title>
+</head>
+<body>
+<style>
+  :root {
+    --paper: #e9ede9;
+    --surface: #f6f8f5;
+    --surface-2: #eef1ec;
+    --ink: #17201c;
+    --ink-soft: #4a564f;
+    --ink-faint: #7c877f;
+    --line: #d3dad2;
+    --grid: #dde3db;
+    --accent: #12715c;
+    --accent-deep: #0c5344;
+    --accent-soft: rgba(18, 113, 92, 0.12);
+    --accent-ink: #0c5344;
+    --gold: #a9762c;
+    --shadow: 0 1px 2px rgba(23, 32, 28, .05), 0 8px 24px -12px rgba(23, 32, 28, .14);
+    --radius: 14px;
+    --font-sans: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, -apple-system, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #10151a;
+      --surface: #18202a;
+      --surface-2: #1e2833;
+      --ink: #e7ece7;
+      --ink-soft: #a7b2ac;
+      --ink-faint: #6f7d78;
+      --line: #2a3641;
+      --grid: #26313b;
+      --accent: #3fbf9f;
+      --accent-deep: #58d3b4;
+      --accent-soft: rgba(63, 191, 159, 0.14);
+      --accent-ink: #6fe0c4;
+      --gold: #d0a15a;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #e9ede9; --surface: #f6f8f5; --surface-2: #eef1ec; --ink: #17201c;
+    --ink-soft: #4a564f; --ink-faint: #7c877f; --line: #d3dad2; --grid: #dde3db;
+    --accent: #12715c; --accent-deep: #0c5344; --accent-soft: rgba(18,113,92,.12);
+    --accent-ink: #0c5344; --gold: #a9762c;
+    --shadow: 0 1px 2px rgba(23,32,28,.05), 0 8px 24px -12px rgba(23,32,28,.14);
+  }
+  :root[data-theme="dark"] {
+    --paper: #10151a; --surface: #18202a; --surface-2: #1e2833; --ink: #e7ece7;
+    --ink-soft: #a7b2ac; --ink-faint: #6f7d78; --line: #2a3641; --grid: #26313b;
+    --accent: #3fbf9f; --accent-deep: #58d3b4; --accent-soft: rgba(63,191,159,.14);
+    --accent-ink: #6fe0c4; --gold: #d0a15a;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.5);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--font-sans); line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: clamp(24px, 5vw, 64px) clamp(18px, 4vw, 40px) 80px; }
+
+  /* Masthead */
+  .eyebrow {
+    font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--accent-ink); font-weight: 700; margin: 0 0 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--accent); display: inline-block; }
+  h1 {
+    font-size: clamp(30px, 5.4vw, 52px); line-height: 1.08; margin: 0 0 16px;
+    font-weight: 800; letter-spacing: -.02em; text-wrap: balance;
+  }
+  h1 .yr { font-family: var(--font-mono); font-weight: 600; color: var(--accent-ink); letter-spacing: -.01em; }
+  .lede { font-size: clamp(15px, 2vw, 18px); color: var(--ink-soft); max-width: 60ch; margin: 0; }
+  .masthead-meta {
+    margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px 20px;
+    font-size: 13px; color: var(--ink-faint);
+  }
+  .masthead-meta b { color: var(--ink-soft); font-weight: 600; }
+
+  /* Key figures */
+  .tiles {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    margin: 40px 0 12px;
+  }
+  @media (max-width: 720px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+  .tile {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 20px 20px 18px; box-shadow: var(--shadow);
+  }
+  .tile .k {
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 700; margin-bottom: 12px;
+  }
+  .tile .v {
+    font-family: var(--font-mono); font-size: clamp(24px, 3.4vw, 32px); font-weight: 600;
+    letter-spacing: -.02em; color: var(--ink); font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .tile .v small { font-size: .5em; font-weight: 600; color: var(--ink-soft); margin-left: 3px; letter-spacing: 0; }
+  .tile .sub { font-size: 12.5px; color: var(--ink-soft); margin-top: 9px; }
+
+  /* Sections */
+  section { margin-top: 46px; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 6px; flex-wrap: wrap; }
+  h2 { font-size: clamp(18px, 2.6vw, 22px); font-weight: 750; letter-spacing: -.01em; margin: 0; }
+  .sec-note { font-size: 13px; color: var(--ink-faint); margin: 4px 0 20px; max-width: 66ch; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: clamp(16px, 2.4vw, 26px); box-shadow: var(--shadow);
+  }
+  .chart-wrap { width: 100%; overflow-x: auto; }
+  svg { display: block; width: 100%; height: auto; }
+  .grid-line { stroke: var(--grid); stroke-width: 1; }
+  .axis-txt { fill: var(--ink-faint); font-family: var(--font-mono); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .area { fill: var(--accent-soft); }
+  .trend { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+  .dot-end { fill: var(--accent); }
+  .dot-halo { fill: var(--accent-soft); }
+  .bar { fill: var(--accent); }
+  .bar.dim { fill: var(--gold); }
+  .bar-lbl { fill: var(--ink-soft); font-family: var(--font-mono); font-size: 11px; font-variant-numeric: tabular-nums; }
+
+  /* Regional bars */
+  .region { display: grid; gap: 9px; }
+  .rrow { display: grid; grid-template-columns: 74px 1fr 96px; align-items: center; gap: 12px; }
+  @media (max-width: 560px){ .rrow { grid-template-columns: 58px 1fr 82px; gap: 8px; } }
+  .rname { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+  .rtrack { height: 22px; background: var(--surface-2); border-radius: 6px; overflow: hidden; position: relative; }
+  .rfill { height: 100%; background: var(--accent); border-radius: 6px; transform-origin: left; }
+  .rval { font-family: var(--font-mono); font-size: 12.5px; text-align: right; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .rval b { color: var(--ink); font-weight: 600; }
+
+  /* Provenance / quality */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 720px){ .grid2 { grid-template-columns: 1fr; } }
+  .src-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .src-row:last-child { border-bottom: none; }
+  .src-name { font-size: 14px; font-weight: 600; }
+  .src-org { font-size: 12px; color: var(--ink-faint); margin-top: 2px; }
+  .src-val { font-family: var(--font-mono); font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .qlist { list-style: none; padding: 0; margin: 0; display: grid; gap: 13px; }
+  .qlist li { display: grid; grid-template-columns: 20px 1fr; gap: 11px; font-size: 13.5px; color: var(--ink-soft); }
+  .qlist .ck { color: var(--accent-ink); font-weight: 800; }
+  .qlist b { color: var(--ink); font-weight: 650; }
+
+  .schema { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-soft); background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; overflow-x: auto; line-height: 1.9; }
+  .schema .col { color: var(--accent-ink); font-weight: 600; }
+
+  footer { margin-top: 54px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-faint); display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: space-between; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink); font-size: 12px; font-weight: 650; }
+  .caption { font-size: 12px; color: var(--ink-faint); margin-top: 14px; }
+  b.hl { color: var(--accent-ink); }
+</style>
+
+<div class="wrap">
+  <nav style="display:flex;gap:20px;font-size:13.5px;margin-bottom:26px;font-family:var(--font-sans)"><a href="index.html" style="font-weight:700;color:var(--accent-ink);border-bottom:2px solid var(--accent);padding-bottom:3px;text-decoration:none">요약 대시보드</a><a href="map.html" style="color:var(--ink-faint);text-decoration:none;padding-bottom:3px;text-decoration:none">지도</a><a href="DATA_SPEC.md" style="color:var(--ink-faint);text-decoration:none;margin-left:auto">데이터 명세서 ↗</a></nav>
+  <header>
+    <p class="eyebrow">데이터셋 개요 · Nationwide Land Price</p>
+    <h1>대한민국 개별공시지가 시계열<br><span class="yr">1990 – 2026</span></h1>
+    <p class="lede">제도가 시작된 1990년부터 2026년까지, 전국 모든 필지의 연도별 공시지가(원/㎡)를 공신력 있는 정부 출처만으로 수집·정규화한 통합 데이터셋입니다.</p>
+    <div class="masthead-meta">
+      <span><b>단위</b> 필지(PNU) × 연도 × 원/㎡</span>
+      <span><b>포맷</b> Parquet · 연도/시군구 파티션</span>
+      <span><b>출처</b> 국토교통부 V-World · 서울 열린데이터광장</span>
+    </div>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+  <p class="caption">가격 통계는 전국·전기간을 단일하게 포괄하는 V-World API 기준, 매년 1월 1일 공시분·양수 가격으로 산출했습니다.</p>
+
+  <section>
+    <div class="sec-head">
+      <h2>전국 중위 공시지가 추이</h2>
+      <span class="pill" id="growth-pill">—</span>
+    </div>
+    <p class="sec-note">이상치에 강한 중위값(median) 기준. 편차가 큰 지가 분포에서 “보통 땅값”의 궤적을 보여줍니다. 평균값은 소수 고가 필지에 끌려 중위값의 10배 이상으로 나타납니다.</p>
+    <div class="card"><div class="chart-wrap"><svg id="trend" viewBox="0 0 960 340" role="img" aria-label="1990-2026 전국 중위 공시지가 추이"></svg></div></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>연도별 공시 필지 수</h2></div>
+    <p class="sec-note">수집된 필지 규모의 연도별 추이입니다. 2006년의 낮은 값은 수집 누락이 아니라 원본 데이터의 특성으로, 서울 공식 데이터와 API가 독립적으로 일치하며 227개 시군구 전역에서 균일하게 나타납니다.</p>
+    <div class="card"><div class="chart-wrap"><svg id="parcels" viewBox="0 0 960 300" role="img" aria-label="연도별 공시 필지 수"></svg></div></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>2026년 시도별 평균 공시지가</h2>
+      <span class="pill" id="gap-pill">—</span>
+    </div>
+    <p class="sec-note">17개 시·도의 필지 평균 지가(만원/㎡). 데이터가 담아낸 지역 격차의 크기를 보여줍니다.</p>
+    <div class="card"><div class="region" id="region"></div></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>필지 하나의 36년 — 조회 예시</h2></div>
+    <p class="sec-note">PNU 하나로 전 기간 시계열을 즉시 뽑을 수 있습니다. 아래는 서울 종로구 청운동의 한 필지(1990–2026).</p>
+    <div class="card"><div class="chart-wrap"><svg id="spark" viewBox="0 0 960 220" role="img" aria-label="샘플 필지 시계열"></svg></div></div>
+  </section>
+
+  <section>
+    <div class="grid2">
+      <div>
+        <h2 style="margin-bottom:14px;">출처 구성</h2>
+        <div class="card" id="sources"></div>
+      </div>
+      <div>
+        <h2 style="margin-bottom:14px;">데이터 품질</h2>
+        <div class="card">
+          <ul class="qlist">
+            <li><span class="ck">✓</span><span><b>중복키 0 · 가격충돌 0</b> — 전 연도·전 소스 검증 완료</span></li>
+            <li><span class="ck">✓</span><span><b>다중 개정본 정리</b> — API가 반환하는 정정 전·후 값 중 최신본(lastUpdtDt)만 채택. 완전중복 716만 행 제거, 충돌 385필지 재조회 확정</span></li>
+            <li><span class="ck">✓</span><span><b>교차검증</b> — 서울 1990년 전수(43,896필지)를 공식 데이터와 대조, 가격 불일치 0</span></li>
+            <li><span class="ck">✓</span><span><b>행정구역 개편 보정</b> — 전북·전남·광주 등 코드 변경 지역의 과거 데이터를 폐지 코드까지 포함해 완전 수집</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>표준 스키마</h2></div>
+    <p class="sec-note">모든 출처를 하나의 필지 단위 사실 테이블로 정규화했습니다.</p>
+    <div class="schema">
+<span class="col">pnu</span>          필지 고유번호 19자리 (법정동10 + 대장구분1 + 본번4 + 부번4)<br>
+<span class="col">stdr_year</span>    공시 기준연도 (1990–2026)<br>
+<span class="col">stdr_month</span>   기준월 · 1 = 정기공시(1.1) / 7 = 추가공시(7.1)<br>
+<span class="col">price_per_m2</span> 공시지가 (원/㎡)<br>
+<span class="col">pblntf_de</span>    공시일자 · <span class="col">std_land_yn</span> 표준지 여부 · <span class="col">source</span> 출처
+    </div>
+  </section>
+
+  <footer>
+    <span>대한민국 개별공시지가 통합 데이터셋 · 1990–2026 · 37개 연도</span>
+    <span>공적 평가가격(공시지가) 기준 — 시장 실거래가와 다름</span>
+  </footer>
+</div>
+
+<script id="data" type="application/json">{"summary": {"rows": 1148663901, "years": 37, "min_year": 1990, "max_year": 2026}, "per_year": [{"year": 1990, "parcels": 23496059, "avg": 89207.0, "med": 4206}, {"year": 1991, "parcels": 24332190, "avg": 113213.0, "med": 4363}, {"year": 1992, "parcels": 24571918, "avg": 123526.0, "med": 4530}, {"year": 1993, "parcels": 24886629, "avg": 119342.0, "med": 4382}, {"year": 1994, "parcels": 25286973, "avg": 113037.0, "med": 4216}, {"year": 1995, "parcels": 25704199, "avg": 111886.0, "med": 4304}, {"year": 1996, "parcels": 26276975, "avg": 111926.0, "med": 4371}, {"year": 1997, "parcels": 26750832, "avg": 114175.0, "med": 4626}, {"year": 1998, "parcels": 26997592, "avg": 114220.0, "med": 4993}, {"year": 1999, "parcels": 27074975, "avg": 102425.0, "med": 4903}, {"year": 2000, "parcels": 27112825, "avg": 104153.0, "med": 5267}, {"year": 2001, "parcels": 27304637, "avg": 103455.0, "med": 5503}, {"year": 2002, "parcels": 27448813, "avg": 104716.0, "med": 5594}, {"year": 2003, "parcels": 27572678, "avg": 115614.0, "med": 5804}, {"year": 2004, "parcels": 27684037, "avg": 130152.0, "med": 7027}, {"year": 2005, "parcels": 27874425, "avg": 144437.0, "med": 9248}, {"year": 2006, "parcels": 25933299, "avg": 138387.0, "med": 10003}, {"year": 2007, "parcels": 29107161, "avg": 172852.0, "med": 12417}, {"year": 2008, "parcels": 29516173, "avg": 183854.0, "med": 13042}, {"year": 2009, "parcels": 30003214, "avg": 180497.0, "med": 13056}, {"year": 2010, "parcels": 30486800, "avg": 182574.0, "med": 13129}, {"year": 2011, "parcels": 30889711, "avg": 183640.0, "med": 13474}, {"year": 2012, "parcels": 31147487, "avg": 189706.0, "med": 14452}, {"year": 2013, "parcels": 31493439, "avg": 192730.0, "med": 15061}, {"year": 2014, "parcels": 31691426, "avg": 197669.0, "med": 16144}, {"year": 2015, "parcels": 31909757, "avg": 203293.0, "med": 17208}, {"year": 2016, "parcels": 32228734, "avg": 210454.0, "med": 18398}, {"year": 2017, "parcels": 32605497, "avg": 218166.0, "med": 19521}, {"year": 2018, "parcels": 33022151, "avg": 229410.0, "med": 20683}, {"year": 2019, "parcels": 33459291, "avg": 243927.0, "med": 21866}, {"year": 2020, "parcels": 33916440, "avg": 253358.0, "med": 22616}, {"year": 2021, "parcels": 34522417, "avg": 274981.0, "med": 24451}, {"year": 2022, "parcels": 34953999, "avg": 298637.0, "med": 26043}, {"year": 2023, "parcels": 38109338, "avg": 263609.0, "med": 22404}, {"year": 2024, "parcels": 35538898, "avg": 277173.0, "med": 24009}, {"year": 2025, "parcels": 36216490, "avg": 281527.0, "med": 24826}, {"year": 2026, "parcels": 35887389, "avg": 287514.0, "med": 24425}], "per_sido_2026": [{"code": "11", "name": "서울", "parcels": 887699, "avg": 5087138.0}, {"code": "26", "name": "부산", "parcels": 691197, "avg": 1095153.0}, {"code": "27", "name": "대구", "parcels": 564927, "avg": 698122.0}, {"code": "30", "name": "대전", "parcels": 237805, "avg": 678006.0}, {"code": "28", "name": "인천", "parcels": 641823, "avg": 539927.0}, {"code": "29", "name": "광주", "parcels": 382008, "avg": 402923.0}, {"code": "41", "name": "경기", "parcels": 4937956, "avg": 398273.0}, {"code": "31", "name": "울산", "parcels": 439294, "avg": 375506.0}, {"code": "36", "name": "세종", "parcels": 185564, "avg": 206014.0}, {"code": "50", "name": "제주", "parcels": 582703, "avg": 188770.0}, {"code": "48", "name": "경남", "parcels": 4577706, "avg": 96039.0}, {"code": "47", "name": "경북", "parcels": 4308441, "avg": 76056.0}, {"code": "51", "name": "강원", "parcels": 2750257, "avg": 71968.0}, {"code": "43", "name": "충북", "parcels": 2402654, "avg": 68343.0}, {"code": "44", "name": "충남", "parcels": 3755907, "avg": 66098.0}, {"code": "52", "name": "전북", "parcels": 2956712, "avg": 51610.0}, {"code": "46", "name": "전남", "parcels": 5584736, "avg": 32067.0}], "sources": [{"source": "vworld_api", "rows": 1113800066}, {"source": "seoul_opendata", "rows": 34863835}], "sample_parcel": {"pnu": "1111010100200090004", "label": "서울 종로구 청운동", "series": [{"year": 1990, "price": 690000}, {"year": 1991, "price": 229000}, {"year": 1992, "price": 229000}, {"year": 1993, "price": 199000}, {"year": 1994, "price": 211000}, {"year": 1995, "price": 205000}, {"year": 1996, "price": 209000}, {"year": 1997, "price": 226000}, {"year": 1998, "price": 77700}, {"year": 1999, "price": 69100}, {"year": 2000, "price": 69100}, {"year": 2001, "price": 68000}, {"year": 2002, "price": 68000}, {"year": 2003, "price": 77400}, {"year": 2004, "price": 90900}, {"year": 2005, "price": 90900}, {"year": 2006, "price": 90900}, {"year": 2007, "price": 100000}, {"year": 2008, "price": 103000}, {"year": 2009, "price": 107000}, {"year": 2010, "price": 110000}, {"year": 2011, "price": 114000}, {"year": 2012, "price": 124000}, {"year": 2013, "price": 126000}, {"year": 2014, "price": 130400}, {"year": 2015, "price": 133500}, {"year": 2016, "price": 127500}, {"year": 2017, "price": 104000}, {"year": 2018, "price": 110000}, {"year": 2019, "price": 114000}, {"year": 2020, "price": 115000}, {"year": 2021, "price": 125000}, {"year": 2022, "price": 127900}, {"year": 2023, "price": 117000}, {"year": 2024, "price": 117000}, {"year": 2025, "price": 119000}, {"year": 2026, "price": 121600}]}}</script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById('data').textContent);
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); return e; }
+  function comma(n) { return Math.round(n).toLocaleString('en-US'); }
+  function eok(n) { // 억 단위
+    return (n / 1e8).toFixed(1) + '억';
+  }
+  function manCount(n) { // 만 단위 정수
+    return comma(Math.round(n / 1e4)) + '만';
+  }
+
+  /* ---- Tiles ---- */
+  var y = D.per_year, last = y[y.length - 1], first = y[0];
+  var sido = D.per_sido_2026;
+  var topSido = sido[0], botSido = sido[sido.length - 1];
+  var gap = topSido.avg / botSido.avg;
+  var medGrow = last.med / first.med;
+  var tiles = [
+    { k: '수록 기간', v: '37', small: '개 연도', sub: '1990 – 2026 (제도 최초부터)' },
+    { k: '총 레코드', v: eok(D.summary.rows), small: '행', sub: '필지 × 연도 공시가격' },
+    { k: '최신 필지 수 · 2026', v: manCount(last.parcels), small: '', sub: '전국 공시 대상 필지' },
+    { k: '지역 격차 · 2026', v: Math.round(gap), small: '배', sub: topSido.name + ' ↔ ' + botSido.name + ' 평균 지가' }
+  ];
+  var th = document.getElementById('tiles');
+  tiles.forEach(function (t) {
+    var d = document.createElement('div'); d.className = 'tile';
+    d.innerHTML = '<div class="k">' + t.k + '</div><div class="v">' + t.v +
+      (t.small ? '<small>' + t.small + '</small>' : '') + '</div><div class="sub">' + t.sub + '</div>';
+    th.appendChild(d);
+  });
+  document.getElementById('growth-pill').textContent = '중위값 ' + medGrow.toFixed(1) + '배 ↑  (' + comma(first.med) + ' → ' + comma(last.med) + ' 원/㎡)';
+  document.getElementById('gap-pill').textContent = topSido.name + ' ' + (topSido.avg/1e4).toFixed(0) + '만 · ' + botSido.name + ' ' + (botSido.avg/1e4).toFixed(1) + '만원/㎡';
+
+  /* ---- Trend area (median) ---- */
+  (function () {
+    var W = 960, H = 340, ml = 56, mr = 20, mt = 24, mb = 34;
+    var iw = W - ml - mr, ih = H - mt - mb;
+    var svg = document.getElementById('trend');
+    var maxV = Math.max.apply(null, y.map(function (d) { return d.med; })) * 1.08;
+    var years = y.map(function (d) { return d.year; });
+    var x = function (yr) { return ml + (yr - years[0]) / (years[years.length-1] - years[0]) * iw; };
+    var yy = function (v) { return mt + ih - v / maxV * ih; };
+    // gridlines + y labels
+    var steps = 5;
+    for (var i = 0; i <= steps; i++) {
+      var v = maxV * i / steps, gy = yy(v);
+      svg.appendChild(el('line', { x1: ml, y1: gy, x2: W - mr, y2: gy, class: 'grid-line' }));
+      var tx = el('text', { x: ml - 10, y: gy + 4, class: 'axis-txt', 'text-anchor': 'end' });
+      tx.textContent = comma(v); svg.appendChild(tx);
+    }
+    // x labels every 6 yrs
+    years.forEach(function (yr) {
+      if (yr % 6 === 0 || yr === years[years.length-1]) {
+        var tx = el('text', { x: x(yr), y: H - 10, class: 'axis-txt', 'text-anchor': 'middle' });
+        tx.textContent = yr; svg.appendChild(tx);
+      }
+    });
+    var line = y.map(function (d, i) { return (i ? 'L' : 'M') + x(d.year).toFixed(1) + ' ' + yy(d.med).toFixed(1); }).join(' ');
+    var area = 'M' + x(years[0]) + ' ' + yy(0) + ' ' + line.replace('M','L').slice(1) + ' L' + x(years[years.length-1]) + ' ' + yy(0) + ' Z';
+    svg.appendChild(el('path', { d: area, class: 'area' }));
+    svg.appendChild(el('path', { d: line, class: 'trend' }));
+    var lx = x(last.year), ly = yy(last.med);
+    svg.appendChild(el('circle', { cx: lx, cy: ly, r: 8, class: 'dot-halo' }));
+    svg.appendChild(el('circle', { cx: lx, cy: ly, r: 3.5, class: 'dot-end' }));
+    var lab = el('text', { x: lx - 6, y: ly - 14, class: 'axis-txt', 'text-anchor': 'end', 'font-weight': '700' });
+    lab.setAttribute('fill', 'var(--accent-ink)');
+    lab.textContent = comma(last.med) + ' 원/㎡'; svg.appendChild(lab);
+  })();
+
+  /* ---- Parcels bars ---- */
+  (function () {
+    var W = 960, H = 300, ml = 52, mr = 16, mt = 20, mb = 34;
+    var iw = W - ml - mr, ih = H - mt - mb;
+    var svg = document.getElementById('parcels');
+    var maxV = Math.max.apply(null, y.map(function (d) { return d.parcels; })) * 1.05;
+    var n = y.length, bw = iw / n * 0.66, step = iw / n;
+    for (var i = 0; i <= 4; i++) {
+      var v = maxV * i / 4, gy = mt + ih - v / maxV * ih;
+      svg.appendChild(el('line', { x1: ml, y1: gy, x2: W - mr, y2: gy, class: 'grid-line' }));
+      var tx = el('text', { x: ml - 9, y: gy + 4, class: 'axis-txt', 'text-anchor': 'end' });
+      tx.textContent = (v/1e6).toFixed(0) + 'M'; svg.appendChild(tx);
+    }
+    // find 2006 dip index
+    y.forEach(function (d, i) {
+      var bh = d.parcels / maxV * ih, bx = ml + step * i + (step - bw) / 2, by = mt + ih - bh;
+      var dip = d.year === 2006;
+      svg.appendChild(el('rect', { x: bx, y: by, width: bw, height: bh, rx: 2, class: 'bar' + (dip ? ' dim' : '') }));
+      if (d.year % 6 === 0 || d.year === y[y.length-1].year) {
+        var tx = el('text', { x: bx + bw/2, y: H - 10, class: 'axis-txt', 'text-anchor': 'middle' });
+        tx.textContent = d.year; svg.appendChild(tx);
+      }
+      if (dip) {
+        var an = el('text', { x: bx + bw/2, y: by - 8, class: 'axis-txt', 'text-anchor': 'middle', 'font-weight': '700' });
+        an.setAttribute('fill', 'var(--gold)'); an.textContent = "'06"; svg.appendChild(an);
+      }
+    });
+  })();
+
+  /* ---- Region horizontal bars ---- */
+  (function () {
+    var box = document.getElementById('region');
+    var maxV = sido[0].avg;
+    sido.forEach(function (s, i) {
+      var pct = s.avg / maxV * 100;
+      var op = (1 - i / sido.length * 0.62).toFixed(3);
+      var row = document.createElement('div'); row.className = 'rrow';
+      row.innerHTML =
+        '<div class="rname">' + s.name + '</div>' +
+        '<div class="rtrack"><div class="rfill" style="width:' + pct.toFixed(1) + '%;opacity:' + op + '"></div></div>' +
+        '<div class="rval"><b>' + (s.avg/1e4).toFixed(s.avg >= 1e6 ? 0 : 1) + '</b> 만원</div>';
+      box.appendChild(row);
+    });
+  })();
+
+  /* ---- Sample sparkline ---- */
+  (function () {
+    var s = D.sample_parcel.series;
+    var W = 960, H = 220, ml = 20, mr = 20, mt = 26, mb = 30;
+    var iw = W - ml - mr, ih = H - mt - mb;
+    var svg = document.getElementById('spark');
+    var vals = s.map(function (d) { return d.price; });
+    var maxV = Math.max.apply(null, vals) * 1.12, minV = Math.min.apply(null, vals) * 0.7;
+    var yrs = s.map(function (d) { return d.year; });
+    var x = function (yr) { return ml + (yr - yrs[0]) / (yrs[yrs.length-1] - yrs[0]) * iw; };
+    var yy = function (v) { return mt + ih - (v - minV) / (maxV - minV) * ih; };
+    var line = s.map(function (d, i) { return (i ? 'L' : 'M') + x(d.year).toFixed(1) + ' ' + yy(d.price).toFixed(1); }).join(' ');
+    var area = 'M' + x(yrs[0]) + ' ' + (mt+ih) + ' ' + line.replace('M','L').slice(1) + ' L' + x(yrs[yrs.length-1]) + ' ' + (mt+ih) + ' Z';
+    svg.appendChild(el('path', { d: area, class: 'area' }));
+    svg.appendChild(el('path', { d: line, class: 'trend' }));
+    [s[0], s[s.length-1]].forEach(function (d) {
+      svg.appendChild(el('circle', { cx: x(d.year), cy: yy(d.price), r: 3.5, class: 'dot-end' }));
+      var t = el('text', { x: x(d.year), y: yy(d.price) - 12, class: 'axis-txt', 'text-anchor': d === s[0] ? 'start' : 'end', 'font-weight':'700' });
+      t.setAttribute('fill', 'var(--accent-ink)');
+      t.textContent = comma(d.price) + '원'; svg.appendChild(t);
+    });
+    yrs.forEach(function (yr) {
+      if (yr % 6 === 0 || yr === yrs[yrs.length-1]) {
+        var t = el('text', { x: x(yr), y: H - 9, class: 'axis-txt', 'text-anchor': 'middle' });
+        t.textContent = yr; svg.appendChild(t);
+      }
+    });
+  })();
+
+  /* ---- Sources ---- */
+  (function () {
+    var box = document.getElementById('sources');
+    var meta = {
+      vworld_api: { name: 'V-World 개별공시지가 API', org: '국토교통부 국가공간정보센터', note: '전국·전기간' },
+      seoul_opendata: { name: '서울시 개별공시지가 벌크', org: '서울 열린데이터광장 (교차검증)', note: '서울 1990–2026' }
+    };
+    D.sources.forEach(function (s) {
+      var m = meta[s.source] || { name: s.source, org: '', note: '' };
+      var row = document.createElement('div'); row.className = 'src-row';
+      row.innerHTML = '<div><div class="src-name">' + m.name + '</div><div class="src-org">' + m.org + '</div></div>' +
+        '<div class="src-val">' + eok(s.rows).replace('억',' 억 행') + '</div>';
+      box.appendChild(row);
+    });
+  })();
+})();
+</script>
+</body>
+</html>
